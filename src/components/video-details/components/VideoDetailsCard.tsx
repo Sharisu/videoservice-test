@@ -1,4 +1,5 @@
-import { formatDate, formatDuration, formatViews } from '@/src/lib/utils';
+import { VideoContainer } from '@/src/components/shared';
+import { formatDate, formatViews } from '@/src/lib/utils';
 import { Video } from '@/src/types/video';
 
 interface Props {
@@ -8,17 +9,8 @@ interface Props {
 export function VideoDetailsCard({ video }: Props) {
   return (
     <div>
-      <div className="flex flex-col overflow-hidden rounded-lg bg-white shadow-xl">
-        <div className="relative aspect-video bg-gray-200">
-          <img
-            src={video.thumbnail}
-            alt={video.title}
-            className="h-full w-full object-cover"
-          />
-          <div className="bg-opacity-75 absolute right-4 bottom-4 rounded bg-black px-2 py-1 text-sm text-white">
-            {formatDuration(video.durationSec)}
-          </div>
-        </div>
+      <div className="group flex flex-col overflow-hidden rounded-lg bg-white shadow-xl">
+        <VideoContainer video={video} />
 
         <div className="flex flex-col gap-4 pt-2 pr-6 pb-6 pl-6">
           <div>

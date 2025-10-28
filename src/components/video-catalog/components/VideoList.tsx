@@ -1,18 +1,15 @@
 'use client';
 
 import { CatIcon, RefreshCwIcon } from 'lucide-react';
-import { useSearchParams } from 'next/navigation';
 
+import { useFilters } from '@/src/hooks/useFilters';
 import { useVideos } from '@/src/hooks/useVideos';
-import { VideoDuration } from '@/src/types/video';
 
 import { VideoCard } from './VideoCard';
 import { VideoCardSkeleton } from './VideoCardSkeleton';
 
 export function VideoList() {
-  const searchParams = useSearchParams();
-  const search = searchParams.get('search') || undefined;
-  const duration = (searchParams.get('duration') as VideoDuration) || undefined;
+  const { search, duration } = useFilters();
 
   const {
     data: videos,
@@ -21,8 +18,8 @@ export function VideoList() {
     refetch,
     error,
   } = useVideos({
-    search,
-    duration,
+    search: search || undefined,
+    duration: duration !== 'all' ? duration : undefined,
   });
 
   const handleRefresh = () => {
