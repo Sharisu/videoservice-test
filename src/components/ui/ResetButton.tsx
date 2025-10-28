@@ -15,7 +15,7 @@ export function ResetButton({ onClick, disabled = false, className = '' }: Reset
       onClick={onClick}
       disabled={disabled}
       className={clsx(
-        'h-10 rounded-md px-4 py-2 text-sm font-medium text-gray-700 focus:outline-none',
+        'h-10 rounded-md px-4 py-2 text-sm font-medium text-gray-700',
         disabled ? 'opacity-50' : 'cursor-pointer bg-gray-200 opacity-100 hover:bg-gray-300',
         className,
       )}

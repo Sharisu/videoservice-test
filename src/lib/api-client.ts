@@ -26,3 +26,17 @@ export async function getVideos({ search, duration }: Args): Promise<Video[]> {
 
   return response.json();
 }
+
+export async function getVideoById(id: string): Promise<Video> {
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
+  const response = await fetch(`${baseUrl}/api/videos/${id}`);
+
+  if (!response.ok) {
+    if (response.status === 404) {
+      throw new Error('Video not found');
+    }
+    throw new Error('Failed to fetch video');
+  }
+
+  return response.json();
+}

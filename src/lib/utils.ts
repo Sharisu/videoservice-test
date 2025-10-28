@@ -6,7 +6,7 @@ export function formatDuration(seconds: number): string {
   if (hours > 0) {
     return `${hours}:${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
   }
-  
+
   return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
 }
 
@@ -42,4 +42,13 @@ export function formatViews(views: number): string {
   } else {
     return `${(views / 1000000).toFixed(1)}M`;
   }
+}
+
+export function formatDate(dateString: string): string {
+  const date = new Date(dateString);
+  return date.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
 }

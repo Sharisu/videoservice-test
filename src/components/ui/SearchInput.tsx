@@ -26,7 +26,7 @@ export function SearchInput({
       value={value}
       onChange={handleChange}
       placeholder={placeholder}
-      className={`focus:border-accent h-10 w-full rounded-md border-2 border-gray-300 px-4 py-2 focus:outline-none ${className}`}
+      className={`focus:border-accent h-10 w-full rounded-full border-2 border-gray-300 px-4 py-2 focus:outline-none ${className}`}
     />
   );
 }

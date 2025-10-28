@@ -1,5 +1,5 @@
-import { VideoPage } from '@/src/components/video-page';
+import { VideoCatalog } from '@/src/components/video-catalog';
 
 export default function Home() {
-  return <VideoPage />;
+  return <VideoCatalog />;
 }

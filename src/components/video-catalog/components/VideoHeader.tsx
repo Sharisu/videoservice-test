@@ -56,8 +56,8 @@ export function VideoHeader() {
   const hasActiveFilters = searchInput || duration !== 'all';
 
   return (
-    <div className="mb-8 rounded-lg bg-white p-4">
-      <div className="flex flex-col gap-4 md:flex-row md:items-end">
+    <div className="flex w-full items-center justify-center rounded-lg">
+      <div className="flex w-full max-w-4xl flex-col gap-4 md:flex-row md:items-end">
         <div className="flex-1">
           <SearchInput
             value={searchInput}
@@ -66,7 +66,7 @@ export function VideoHeader() {
           />
         </div>
 
-        <div className="flex w-full items-center gap-2 md:w-48">
+        <div className="flex w-full items-center gap-1 md:w-52">
           <FilterSelect<VideoDuration>
             value={duration}
             onChange={handleDurationChange}
