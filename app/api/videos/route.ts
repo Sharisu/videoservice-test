@@ -1,10 +1,40 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 
 import { mockVideos } from '@/src/constants';
+import { VideoDuration } from '@/src/types/video';
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
-    const sortedVideos = [...mockVideos].sort(
+    const { searchParams } = request.nextUrl;
+    const searchQuery = searchParams.get('search')?.toLowerCase() || '';
+    const durationFilter = (searchParams.get('duration') as VideoDuration) || 'all';
+
+    await new Promise(resolve => setTimeout(resolve, 1000));
+
+    let filteredVideos = [...mockVideos];
+
+    if (searchQuery) {
+      filteredVideos = filteredVideos.filter(video => video.title.toLowerCase().includes(searchQuery));
+    }
+
+    if (durationFilter && durationFilter !== 'all') {
+      filteredVideos = filteredVideos.filter(video => {
+        const durationMin = video.durationSec / 60;
+
+        switch (durationFilter) {
+          case 'short':
+            return durationMin < 5;
+          case 'medium':
+            return durationMin >= 5 && durationMin <= 20;
+          case 'long':
+            return durationMin > 20;
+          default:
+            return true;
+        }
+      });
+    }
+
+    const sortedVideos = filteredVideos.sort(
       (a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime(),
     );
 

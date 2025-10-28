@@ -1,3 +1,5 @@
+export type VideoDuration = 'all' | 'short' | 'medium' | 'long';
+
 export interface Video {
   id: string;
   title: string;

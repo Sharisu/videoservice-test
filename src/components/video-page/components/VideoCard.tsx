@@ -3,11 +3,11 @@ import Image from 'next/image';
 import { formatDuration, formatRelativeDate, formatViews } from '@/src/lib/utils';
 import { Video } from '@/src/types/video';
 
-interface VideoCardProps {
+interface Props {
   video: Video;
 }
 
-export function VideoCard({ video }: VideoCardProps) {
+export function VideoCard({ video }: Props) {
   return (
     <div className="group cursor-pointer">
       <div className="relative aspect-video w-full overflow-hidden rounded-lg bg-gray-200">
@@ -25,7 +25,7 @@ export function VideoCard({ video }: VideoCardProps) {
         </div>
       </div>
 
-      <div className="flex flex-col gap-1">
+      <div className="flex flex-col gap-1 p-4">
         <h3 className="group-hover:text-accent line-clamp-2 font-medium text-gray-900 transition-colors">
           {video.title}
         </h3>

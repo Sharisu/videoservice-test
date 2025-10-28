@@ -3,7 +3,8 @@ import './globals.css';
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 
-import { Header } from '@/src/components/Header';
+import { Header } from '@/src/components/header';
+import { QueryProvider } from '@/src/lib/providers/QueryProvider';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -27,9 +28,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} grid h-screen antialiased`}>
-        <Header />
-        <main className="overflow-y-auto">{children}</main>
+      <body className={`${geistSans.variable} ${geistMono.variable} flex h-screen flex-col antialiased`}>
+        <QueryProvider>
+          <Header />
+          <main className="flex overflow-y-auto">{children}</main>
+        </QueryProvider>
       </body>
     </html>
   );
