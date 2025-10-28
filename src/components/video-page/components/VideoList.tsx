@@ -25,6 +25,10 @@ export function VideoList() {
     duration,
   });
 
+  const handleRefresh = () => {
+    refetch();
+  };
+
   if (error) {
     return (
       <div className="flex flex-col items-center gap-4">
@@ -34,9 +38,7 @@ export function VideoList() {
         </div>
         <button
           className="group hover:text-accent flex cursor-pointer flex-row items-center gap-2 rounded-md bg-gray-200 px-4 py-2 text-black"
-          onClick={() => {
-            refetch();
-          }}
+          onClick={handleRefresh}
         >
           Refresh
           <RefreshCwIcon className="h-4 w-4 transition-transform duration-300 group-hover:rotate-180" />

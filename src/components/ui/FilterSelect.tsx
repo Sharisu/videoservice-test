@@ -13,7 +13,13 @@ interface SelectProps<T> {
   className?: string;
 }
 
-export function Select<T extends string>({ value, onChange, options, id = 'select', className = '' }: SelectProps<T>) {
+export function FilterSelect<T extends string>({
+  value,
+  onChange,
+  options,
+  id = 'select',
+  className = '',
+}: SelectProps<T>) {
   const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     onChange(e.target.value as T);
   };

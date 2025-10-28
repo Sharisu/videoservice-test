@@ -3,7 +3,7 @@
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-import { ResetButton, SearchInput, Select } from '@/src/components/ui';
+import { FilterSelect, ResetButton, SearchInput } from '@/src/components/ui';
 import { useDebounce } from '@/src/hooks/useDebounce';
 import { VideoDuration } from '@/src/types/video';
 
@@ -67,7 +67,7 @@ export function VideoHeader() {
         </div>
 
         <div className="flex w-full items-center gap-2 md:w-48">
-          <Select<VideoDuration>
+          <FilterSelect<VideoDuration>
             value={duration}
             onChange={handleDurationChange}
             options={VIDEO_DURATION_OPTIONS}
