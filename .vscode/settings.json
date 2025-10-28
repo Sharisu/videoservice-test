@@ -6,19 +6,10 @@
     "css": "css",
     "postcss": "css"
   },
-  "tailwindCSS.experimental.classRegex": [
-    "tw`([^`]*)",
-    "tw\\.[a-z]+`([^`]*)",
-    "cn\\(([^)]*)\\)"
-  ],
+  "tailwindCSS.experimental.classRegex": ["tw`([^`]*)", "tw\\.[a-z]+`([^`]*)", "cn\\(([^)]*)\\)"],
   // --- ESLint integration ---
   "eslint.workingDirectories": [{ "mode": "auto" }],
-  "eslint.validate": [
-    "javascript",
-    "javascriptreact",
-    "typescript",
-    "typescriptreact"
-  ],
+  "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
   "eslint.format.enable": true,
   "eslint.lintTask.enable": true,
   "eslint.nodePath": "node_modules",

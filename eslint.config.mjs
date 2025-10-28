@@ -1,111 +1,74 @@
-import { FlatCompat } from "@eslint/eslintrc";
-import { dirname } from "path";
-import { fileURLToPath } from "url";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
-const compat = new FlatCompat({
-  baseDirectory: __dirname,
-});
+import typescriptEslint from '@typescript-eslint/eslint-plugin';
+import tsParser from '@typescript-eslint/parser';
+import reactPlugin from 'eslint-plugin-react';
+import reactHooksPlugin from 'eslint-plugin-react-hooks';
+import simpleImportSort from 'eslint-plugin-simple-import-sort';
 
 const eslintConfig = [
-  ...compat.extends(
-    "next/core-web-vitals",
-    "next/typescript",
-    "airbnb",
-    "airbnb-typescript",
-    "plugin:@typescript-eslint/recommended",
-    "plugin:react-hooks/recommended",
-    "plugin:prettier/recommended"
-  ),
   {
+    ignores: [
+      'node_modules/**',
+      '.next/**',
+      'out/**',
+      'build/**',
+      'dist/**',
+      'coverage/**',
+      '__tests__/**',
+      '*.config.js',
+      '*.config.mjs',
+      '*.config.ts',
+      'next-env.d.ts',
+    ],
+  },
+  {
+    files: ['**/*.ts', '**/*.tsx', '**/*.js', '**/*.jsx'],
     plugins: {
-      "simple-import-sort": (await import("eslint-plugin-simple-import-sort"))
-        .default,
-      prettier: (await import("eslint-plugin-prettier")).default,
+      '@typescript-eslint': typescriptEslint,
+      'simple-import-sort': simpleImportSort,
+      react: reactPlugin,
+      'react-hooks': reactHooksPlugin,
     },
     languageOptions: {
+      parser: tsParser,
       parserOptions: {
         ecmaVersion: 2020,
-        sourceType: "module",
+        sourceType: 'module',
         ecmaFeatures: { jsx: true },
-        project: "./tsconfig.json",
+        project: './tsconfig.json',
       },
     },
     settings: {
-      react: { version: "detect" },
-      "import/resolver": {
-        node: { extensions: [".js", ".jsx", ".ts", ".tsx"] },
-        typescript: { project: "./tsconfig.json" },
-      },
+      react: { version: 'detect' },
     },
     rules: {
-      "prettier/prettier": ["error"],
+      // Simple import sort
+      'simple-import-sort/imports': 'error',
+      'simple-import-sort/exports': 'error',
 
-      "simple-import-sort/imports": "error",
-      "simple-import-sort/exports": "error",
-      "import/prefer-default-export": "off",
-      "import/extensions": [
-        "error",
-        "ignorePackages",
+      // React rules
+      'react/react-in-jsx-scope': 'off',
+      'react/prop-types': 'off',
+
+      // React Hooks rules
+      'react-hooks/rules-of-hooks': 'error',
+      'react-hooks/exhaustive-deps': 'warn',
+
+      // TypeScript rules
+      '@typescript-eslint/explicit-module-boundary-types': 'off',
+      '@typescript-eslint/no-explicit-any': 'warn',
+      '@typescript-eslint/no-unused-vars': [
+        'error',
         {
-          js: "never",
-          jsx: "never",
-          ts: "never",
-          tsx: "never",
-        },
-      ],
-      "import/no-extraneous-dependencies": "off",
-      "import/no-unresolved": "off", // for Next.js alias @/
-
-      "react/react-in-jsx-scope": "off", // Next.js doesn't require React import
-      "react/jsx-filename-extension": ["error", { extensions: [".tsx"] }],
-      "react/require-default-props": "off",
-      "react/jsx-props-no-spreading": "off",
-      "react/function-component-definition": "off",
-
-      "@typescript-eslint/explicit-module-boundary-types": "off",
-      "@typescript-eslint/no-explicit-any": "off",
-      "@typescript-eslint/no-throw-literal": "off",
-      "@typescript-eslint/lines-between-class-members": "off",
-
-      "no-param-reassign": [
-        "error",
-        {
-          props: true,
-          ignorePropertyModificationsFor: ["state"], // for Zustand / Redux Toolkit
+          argsIgnorePattern: '^_',
+          varsIgnorePattern: '^_',
+          caughtErrorsIgnorePattern: '^_',
         },
       ],
 
-      // ✅ --- Cleanups ---
-      "no-console": ["warn", { allow: ["warn", "error"] }],
-
-      // ✅ --- Unused imports removal ---
-      "@typescript-eslint/no-unused-vars": [
-        "error",
-        {
-          argsIgnorePattern: "^_",
-          varsIgnorePattern: "^_",
-          caughtErrorsIgnorePattern: "^_",
-        },
-      ],
-      "no-unused-vars": "off", // disable base rule in favor of TypeScript version
+      // General rules
+      'no-console': ['warn', { allow: ['warn', 'error'] }],
+      'no-unused-vars': 'off',
     },
-  },
-  {
-    ignores: [
-      "node_modules/**",
-      ".next/**",
-      "out/**",
-      "build/**",
-      "dist/**",
-      "coverage/**",
-      "__tests__/**",
-      "*.config.js",
-      "*.config.mjs",
-      "next-env.d.ts",
-    ],
   },
 ];
 
