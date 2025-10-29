@@ -5,7 +5,7 @@ export interface VideoDurationOption {
   label: string;
 }
 
-export const VIDEO_DURATION_OPTIONS: VideoDurationOption[] = [
+export const VIDEO_DURATION_OPTIONS: Array<VideoDurationOption> = [
   { value: 'all', label: 'All durations' },
   { value: 'short', label: '< 5 min' },
   { value: 'medium', label: '5-20 min' },

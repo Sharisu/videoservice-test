@@ -11,7 +11,7 @@ export function VideoHeader() {
 
   return (
     <div className="flex w-full items-center justify-center rounded-lg">
-      <div className="flex w-full max-w-4xl flex-col gap-4 md:flex-row md:items-end">
+      <div className="flex w-full max-w-4xl flex-col gap-4 md:flex-row">
         <div className="flex-1">
           <SearchInput
             value={search}
@@ -20,7 +20,7 @@ export function VideoHeader() {
           />
         </div>
 
-        <div className="flex w-full items-center gap-1 md:w-52">
+        <div className="flex w-full items-center gap-4 md:w-52">
           <FilterSelect<VideoDuration>
             value={duration}
             onChange={onDurationChange}

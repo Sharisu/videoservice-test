@@ -3,8 +3,9 @@
 import { useRouter } from 'next/navigation';
 
 import { PageBreadcrumbs } from '@/src/components/ui';
-import { VideoDetailsCard } from '@/src/components/video-details/components';
 import { Video } from '@/src/types/video';
+
+import { VideoDetailsCard } from './components';
 
 interface Props {
   video: Video;
@@ -21,6 +22,7 @@ export function VideoDetails({ video }: Props) {
       <div className="flex w-full max-w-4xl flex-col gap-2">
         <PageBreadcrumbs
           title={video.title}
+          className="px-4"
           onLevelUpClick={handleBack}
         />
         <VideoDetailsCard video={video} />

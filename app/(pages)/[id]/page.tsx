@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation';
 
-import { VideoDetails } from '@/src/components/video-details';
+import { VideoDetails } from '@/src/features/video-catalog';
 import { getVideoById } from '@/src/lib/api-client';
 
 interface VideoDetailsPageProps {

@@ -1,6 +1,7 @@
-import { VideoContainer } from '@/src/components/shared';
 import { formatDate, formatViews } from '@/src/lib/utils';
 import { Video } from '@/src/types/video';
+
+import { VideoContainer } from './VideoContainer';
 
 interface Props {
   video: Video;
@@ -9,12 +10,12 @@ interface Props {
 export function VideoDetailsCard({ video }: Props) {
   return (
     <div>
-      <div className="group flex flex-col overflow-hidden rounded-lg bg-white shadow-xl">
+      <div className="group bg-card flex flex-col overflow-hidden rounded-lg shadow-xl">
         <VideoContainer video={video} />
 
-        <div className="flex flex-col gap-4 pt-2 pr-6 pb-6 pl-6">
+        <div className="flex flex-col gap-4 p-4">
           <div>
-            <div className="flex flex-wrap items-center gap-2 text-sm text-gray-600">
+            <div className="text-muted-foreground flex flex-wrap items-center gap-2 text-sm">
               <span className="font-medium">{video.author}</span>
               <span>•</span>
               <span>{formatDate(video.publishedAt)}</span>
@@ -30,8 +31,8 @@ export function VideoDetailsCard({ video }: Props) {
           <div className="flex flex-col">
             {video.description && (
               <div>
-                <h2 className="text-lg font-semibold text-gray-900">Description</h2>
-                <p className="leading-relaxed whitespace-pre-wrap text-gray-700">{video.description}</p>
+                <h2 className="text-foreground text-lg font-semibold">Description</h2>
+                <p className="text-secondary-foreground leading-relaxed whitespace-pre-wrap">{video.description}</p>
               </div>
             )}
           </div>

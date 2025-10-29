@@ -1,1 +1,0 @@
-export { VideoDetailsCard } from './VideoDetailsCard';

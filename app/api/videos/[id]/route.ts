@@ -12,7 +12,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       return NextResponse.json({ error: 'Video not found' }, { status: 404 });
     }
 
-    return NextResponse.json(video, { status: 200 });
+    return NextResponse.json(video);
   } catch (error) {
     console.error('Error fetching video:', error);
     return NextResponse.json({ error: 'Failed to fetch video' }, { status: 500 });

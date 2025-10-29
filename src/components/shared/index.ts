@@ -1,1 +1,1 @@
-export { VideoContainer } from './VideoContainer';
+export { Header } from './Header';

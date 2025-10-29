@@ -10,7 +10,7 @@ interface Props {
 
 export function VideoContainer({ video }: Props) {
   return (
-    <div className="relative aspect-video w-full overflow-hidden rounded-lg bg-gray-200">
+    <div className="bg-muted relative aspect-video w-full overflow-hidden rounded-lg">
       <Image
         src={video.thumbnail}
         alt={video.title}
@@ -30,7 +30,7 @@ export function VideoContainer({ video }: Props) {
         </div>
       </div>
 
-      <div className="bg-opacity-80 absolute right-2 bottom-2 rounded bg-black px-2 py-1 text-xs text-white">
+      <div className="bg-opacity-80 absolute right-2 bottom-2 rounded-md bg-black px-2 py-1 text-xs text-white">
         {formatDuration(video.durationSec)}
       </div>
     </div>

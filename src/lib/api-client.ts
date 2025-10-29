@@ -1,42 +1,66 @@
-import { Video, VideoDuration } from '@/src/types/video';
+import { ErrorMode, Video, VideoDuration } from '@/src/types';
 
-interface Args {
-  search?: string;
-  duration?: VideoDuration;
+const API_BASE_URL = 'http://localhost:3000';
+
+interface ApiRequestOptions {
+  method?: 'GET' | 'POST' | 'PUT' | 'DELETE';
+  headers?: Record<string, string>;
 }
 
-export async function getVideos({ search, duration }: Args): Promise<Video[]> {
+async function apiRequest<T>(endpoint: string, options: ApiRequestOptions = {}): Promise<T> {
+  const { method = 'GET', headers = {} } = options;
+  const url = endpoint.startsWith('http') ? endpoint : `${API_BASE_URL}${endpoint}`;
+
+  const defaultHeaders = {
+    'Content-Type': 'application/json',
+    ...headers,
+  };
+
+  const response = await fetch(url, {
+    method,
+    headers: defaultHeaders,
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    const errorMessage = errorData.error || `HTTP Error: ${response.status}`;
+
+    if (response.status === 404) {
+      throw new Error('Resource not found');
+    }
+
+    throw new Error(errorMessage);
+  }
+
+  return response.json();
+}
+
+interface GetVideosArgs {
+  search?: string;
+  duration?: VideoDuration;
+  errorMode?: ErrorMode;
+}
+
+export async function getVideos({ search, duration, errorMode }: GetVideosArgs): Promise<Array<Video>> {
   const params = new URLSearchParams();
 
   if (search) {
     params.set('search', search);
   }
-
   if (duration && duration !== 'all') {
     params.set('duration', duration);
   }
-
-  const url = `/api/videos${params.toString() ? `?${params.toString()}` : ''}`;
-
-  const response = await fetch(url);
-
-  if (!response.ok) {
-    throw new Error('Failed to fetch videos');
+  if (errorMode) {
+    params.set('errorMode', errorMode);
   }
 
-  return response.json();
+  const endpoint = `/api/videos${params.toString() ? `?${params.toString()}` : ''}`;
+
+  return apiRequest<Array<Video>>(endpoint);
 }
 
 export async function getVideoById(id: string): Promise<Video> {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
-  const response = await fetch(`${baseUrl}/api/videos/${id}`);
+  const endpoint = `/api/videos/${id}`;
 
-  if (!response.ok) {
-    if (response.status === 404) {
-      throw new Error('Video not found');
-    }
-    throw new Error('Failed to fetch video');
-  }
-
-  return response.json();
+  return apiRequest<Video>(endpoint);
 }

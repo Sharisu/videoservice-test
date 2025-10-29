@@ -1,6 +1,6 @@
 import { Video } from '@/src/types/video';
 
-export const mockVideos: Video[] = [
+export const mockVideos: Array<Video> = [
   {
     id: '1',
     title: 'Sunrise Over Alpine Lakes: Peaceful Landscapes',

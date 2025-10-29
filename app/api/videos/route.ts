@@ -1,15 +1,23 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 import { mockVideos } from '@/src/constants';
-import { VideoDuration } from '@/src/types/video';
+import { ErrorMode, VideoDuration } from '@/src/types';
 
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = request.nextUrl;
     const searchQuery = searchParams.get('search')?.toLowerCase() || '';
     const durationFilter = (searchParams.get('duration') as VideoDuration) || 'all';
+    const errorMode = (searchParams.get('errorMode') as ErrorMode) || 'off';
 
     await new Promise(resolve => setTimeout(resolve, 1000));
+
+    if (errorMode === 'always') {
+      return NextResponse.json({ error: 'Always error mode enabled' }, { status: 500 });
+    }
+    if (errorMode === 'sometimes' && Math.random() < 1 / 3) {
+      return NextResponse.json({ error: 'Random error occurred' }, { status: 500 });
+    }
 
     let filteredVideos = [...mockVideos];
 
@@ -38,7 +46,7 @@ export async function GET(request: NextRequest) {
       (a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime(),
     );
 
-    return NextResponse.json(sortedVideos, { status: 200 });
+    return NextResponse.json(sortedVideos);
   } catch (error) {
     console.error('Error fetching videos:', error);
     return NextResponse.json({ error: 'Failed to fetch videos' }, { status: 500 });

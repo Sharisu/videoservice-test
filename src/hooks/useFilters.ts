@@ -17,21 +17,13 @@ export function useFilters() {
   const debouncedSearch = useDebounce(search, 500);
 
   useEffect(() => {
-    const currentSearch = searchParams.get('search') || '';
-    const currentDuration = (searchParams.get('duration') as VideoDuration) || 'all';
-
-    setSearch(currentSearch);
-    setDuration(currentDuration);
-  }, [searchParams]);
-
-  useEffect(() => {
     const params = new URLSearchParams();
     if (debouncedSearch) params.set('search', debouncedSearch);
     if (duration !== 'all') params.set('duration', duration);
 
     const newUrl = params.toString() ? `?${params.toString()}` : '/';
-
     const currentUrl = searchParams.toString() ? `?${searchParams.toString()}` : '/';
+
     if (newUrl !== currentUrl) {
       router.push(newUrl, { scroll: false });
     }

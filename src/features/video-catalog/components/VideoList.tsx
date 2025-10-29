@@ -1,15 +1,18 @@
 'use client';
 
-import { CatIcon, RefreshCwIcon } from 'lucide-react';
+import { useSearchParams } from 'next/navigation';
 
-import { useFilters } from '@/src/hooks/useFilters';
 import { useVideos } from '@/src/hooks/useVideos';
+import { VideoDuration } from '@/src/types/video';
 
 import { VideoCard } from './VideoCard';
 import { VideoCardSkeleton } from './VideoCardSkeleton';
+import { VideoError } from './VideoError';
 
 export function VideoList() {
-  const { search, duration } = useFilters();
+  const searchParams = useSearchParams();
+  const search = searchParams.get('search') || undefined;
+  const duration = (searchParams.get('duration') as VideoDuration) || undefined;
 
   const {
     data: videos,
@@ -18,29 +21,16 @@ export function VideoList() {
     refetch,
     error,
   } = useVideos({
-    search: search || undefined,
+    search,
     duration: duration !== 'all' ? duration : undefined,
   });
 
-  const handleRefresh = () => {
-    refetch();
-  };
-
   if (error) {
     return (
-      <div className="flex flex-col items-center gap-4">
-        <div className="flex flex-row items-center gap-2">
-          <p className="text-gray text-gray-500">Oops! Cannot load videos. Please try again.</p>
-          <CatIcon className="h-6 w-6" />
-        </div>
-        <button
-          className="group hover:text-accent flex cursor-pointer flex-row items-center gap-2 rounded-md bg-gray-200 px-4 py-2 text-black"
-          onClick={handleRefresh}
-        >
-          Refresh
-          <RefreshCwIcon className="h-4 w-4 transition-transform duration-300 group-hover:rotate-180" />
-        </button>
-      </div>
+      <VideoError
+        error={error}
+        onRefresh={refetch}
+      />
     );
   }
 
@@ -57,7 +47,7 @@ export function VideoList() {
   if (!videos || videos.length === 0) {
     return (
       <div className="text-center">
-        <p className="text-lg text-gray-500">No videos found</p>
+        <p className="text-secondary-foreground text-lg">No videos found</p>
       </div>
     );
   }
