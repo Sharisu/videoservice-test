@@ -6,7 +6,7 @@ import { Video, VideoDuration } from '@/src/types/video';
 
 import { VideoCard } from './VideoCard';
 import { VideoCardSkeleton } from './VideoCardSkeleton';
-import { VideoError } from './VideoError';
+import { VideoEmptyState } from './VideoEmptyState';
 
 interface VideoListProps {
   initialVideos?: Array<Video>;
@@ -29,9 +29,11 @@ export function VideoList({ initialVideos }: VideoListProps) {
 
   if (error && !isFetching) {
     return (
-      <VideoError
-        error={error}
-        onRefresh={refetch}
+      <VideoEmptyState
+        title="Oops! Cannot load videos. Please try again"
+        description={error?.message}
+        buttonText="Refresh"
+        onButtonClick={refetch}
       />
     );
   }
@@ -48,20 +50,18 @@ export function VideoList({ initialVideos }: VideoListProps) {
 
   if (!videos || videos.length === 0) {
     return (
-      <div className="flex flex-col items-center gap-6">
-        <p className="text-secondary-foreground text-lg">No videos found</p>
-        {hasActiveFilters && (
-          <div className="flex flex-col items-center gap-2">
-            <p className="text-muted-foreground text-sm">Try adjusting your filters</p>
-            <button
-              onClick={onResetFilters}
-              className="hover:text-accent bg-muted text-foreground flex items-center gap-2 rounded-md px-4 py-2 transition-colors"
-            >
-              Reset filters
-            </button>
-          </div>
+      <>
+        {hasActiveFilters ? (
+          <VideoEmptyState
+            title="No videos found"
+            description="Try adjusting your filters"
+            buttonText="Reset filters"
+            onButtonClick={onResetFilters}
+          />
+        ) : (
+          <VideoEmptyState title="No videos found" />
         )}
-      </div>
+      </>
     );
   }
 
