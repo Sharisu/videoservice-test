@@ -13,10 +13,30 @@ export async function GET(request: NextRequest) {
     await new Promise(resolve => setTimeout(resolve, 1000));
 
     if (errorMode === 'always') {
-      return NextResponse.json({ error: 'Always error mode enabled' }, { status: 500 });
+      return NextResponse.json(
+        { error: 'Always error mode enabled' },
+        {
+          status: 500,
+          headers: {
+            'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+            Pragma: 'no-cache',
+            Expires: '0',
+          },
+        },
+      );
     }
     if (errorMode === 'sometimes' && Math.random() < 1 / 3) {
-      return NextResponse.json({ error: 'Random error occurred' }, { status: 500 });
+      return NextResponse.json(
+        { error: 'Random error occurred' },
+        {
+          status: 500,
+          headers: {
+            'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+            Pragma: 'no-cache',
+            Expires: '0',
+          },
+        },
+      );
     }
 
     let filteredVideos = [...mockVideos];
@@ -46,7 +66,10 @@ export async function GET(request: NextRequest) {
       (a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime(),
     );
 
-    return NextResponse.json(sortedVideos);
+    return NextResponse.json(sortedVideos, {
+      status: 200,
+      headers: { 'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=30' },
+    });
   } catch (error) {
     console.error('Error fetching videos:', error);
     return NextResponse.json({ error: 'Failed to fetch videos' }, { status: 500 });

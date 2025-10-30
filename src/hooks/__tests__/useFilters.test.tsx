@@ -1,15 +1,17 @@
 import { act, renderHook, waitFor } from '@testing-library/react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
-import { useFilters } from '../useFilters';
+import { FiltersProvider, useFilters } from '../useFilters';
 
 jest.mock('next/navigation', () => ({
   useRouter: jest.fn(),
   useSearchParams: jest.fn(),
+  usePathname: jest.fn(),
 }));
 
 describe('useFilters', () => {
   const mockPush = jest.fn();
+  const mockReplace = jest.fn();
   const mockSearchParams = {
     get: jest.fn(),
     toString: jest.fn(() => ''),
@@ -18,8 +20,12 @@ describe('useFilters', () => {
   beforeEach(() => {
     jest.useFakeTimers();
     jest.clearAllMocks();
-    (useRouter as jest.Mock).mockReturnValue({ push: mockPush });
+    (useRouter as jest.Mock).mockReturnValue({
+      push: mockPush,
+      replace: mockReplace,
+    });
     (useSearchParams as jest.Mock).mockReturnValue(mockSearchParams);
+    (usePathname as jest.Mock).mockReturnValue('/');
   });
 
   afterEach(() => {
@@ -31,20 +37,26 @@ describe('useFilters', () => {
     mockSearchParams.get.mockReturnValue(null);
     mockSearchParams.toString.mockReturnValue('');
 
-    const { result } = renderHook(() => useFilters());
+    const wrapper = ({ children }: { children: React.ReactNode }) => <FiltersProvider>{children}</FiltersProvider>;
+
+    const { result } = renderHook(() => useFilters(), { wrapper });
+
+    mockReplace.mockClear();
 
     act(() => result.current.onSearchChange('h'));
     act(() => result.current.onSearchChange('he'));
     act(() => result.current.onSearchChange('hello'));
-    expect(mockPush).not.toHaveBeenCalled();
+    act(() => jest.advanceTimersByTime(200));
 
-    act(() => jest.advanceTimersByTime(500));
+    expect(mockReplace).not.toHaveBeenCalled();
+
+    act(() => jest.advanceTimersByTime(320));
 
     await waitFor(() => {
-      expect(mockPush).toHaveBeenCalledWith('?search=hello', { scroll: false });
+      expect(mockReplace).toHaveBeenCalledWith('/?search=hello', { scroll: false });
     });
 
     act(() => result.current.onDurationChange('short'));
-    expect(mockPush).toHaveBeenCalledWith('?search=hello&duration=short', { scroll: false });
+    expect(mockReplace).toHaveBeenCalledWith('/?search=hello&duration=short', { scroll: false });
   });
 });

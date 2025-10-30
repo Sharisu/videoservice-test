@@ -1,18 +1,19 @@
 'use client';
 
-import { useSearchParams } from 'next/navigation';
-
+import { useFilters } from '@/src/hooks/useFilters';
 import { useVideos } from '@/src/hooks/useVideos';
-import { VideoDuration } from '@/src/types/video';
+import { Video, VideoDuration } from '@/src/types/video';
 
 import { VideoCard } from './VideoCard';
 import { VideoCardSkeleton } from './VideoCardSkeleton';
 import { VideoError } from './VideoError';
 
-export function VideoList() {
-  const searchParams = useSearchParams();
-  const search = searchParams.get('search') || undefined;
-  const duration = (searchParams.get('duration') as VideoDuration) || undefined;
+interface VideoListProps {
+  initialVideos?: Array<Video>;
+}
+
+export function VideoList({ initialVideos }: VideoListProps) {
+  const { search, duration, hasActiveFilters, onReset: onResetFilters } = useFilters();
 
   const {
     data: videos,
@@ -21,11 +22,12 @@ export function VideoList() {
     refetch,
     error,
   } = useVideos({
-    search,
-    duration: duration !== 'all' ? duration : undefined,
+    initialVideos,
+    search: search || undefined,
+    duration: duration !== 'all' ? (duration as VideoDuration) : undefined,
   });
 
-  if (error) {
+  if (error && !isFetching) {
     return (
       <VideoError
         error={error}
@@ -46,8 +48,19 @@ export function VideoList() {
 
   if (!videos || videos.length === 0) {
     return (
-      <div className="text-center">
+      <div className="flex flex-col items-center gap-6">
         <p className="text-secondary-foreground text-lg">No videos found</p>
+        {hasActiveFilters && (
+          <div className="flex flex-col items-center gap-2">
+            <p className="text-muted-foreground text-sm">Try adjusting your filters</p>
+            <button
+              onClick={onResetFilters}
+              className="hover:text-accent bg-muted text-foreground flex items-center gap-2 rounded-md px-4 py-2 transition-colors"
+            >
+              Reset filters
+            </button>
+          </div>
+        )}
       </div>
     );
   }
