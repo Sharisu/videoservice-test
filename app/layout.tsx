@@ -4,7 +4,7 @@ import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 
 import { Header } from '@/src/components/shared';
-import { QueryProvider, ThemeProvider } from '@/src/providers';
+import { RootProviders } from '@/src/providers';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -32,17 +32,10 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body className={`${geistSans.variable} ${geistMono.variable} flex h-screen flex-col antialiased`}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <QueryProvider>
-            <Header />
-            <main className="flex overflow-y-auto">{children}</main>
-          </QueryProvider>
-        </ThemeProvider>
+        <RootProviders>
+          <Header />
+          <main className="flex overflow-y-auto">{children}</main>
+        </RootProviders>
       </body>
     </html>
   );

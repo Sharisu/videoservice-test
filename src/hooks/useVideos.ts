@@ -8,15 +8,17 @@ interface Props {
   initialVideos?: Array<Video>;
   search?: string;
   duration?: VideoDuration;
+  hasActiveFilters?: boolean;
 }
 
-export function useVideos({ initialVideos, search, duration }: Props = {}) {
+export function useVideos({ initialVideos, search, duration, hasActiveFilters }: Props = {}) {
   const errorMode = getErrorMode();
 
   return useQuery({
     queryKey: ['videos', { search, duration, errorMode }],
     queryFn: () => getVideos({ search, duration, errorMode }),
-    initialData: initialVideos,
+    initialData: hasActiveFilters ? undefined : initialVideos,
+    refetchOnMount: hasActiveFilters,
     retry: false,
   });
 }

@@ -24,6 +24,7 @@ export function VideoList({ initialVideos }: VideoListProps) {
   } = useVideos({
     initialVideos,
     search: search || undefined,
+    hasActiveFilters,
     duration: duration !== 'all' ? (duration as VideoDuration) : undefined,
   });
 

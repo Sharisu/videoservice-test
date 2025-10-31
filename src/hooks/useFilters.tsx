@@ -1,7 +1,7 @@
 'use client';
 
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { createContext, ReactNode, useCallback, useContext, useEffect, useState, useTransition } from 'react';
+import { createContext, ReactNode, useCallback, useContext, useEffect, useMemo, useState, useTransition } from 'react';
 
 import { VideoDuration } from '@/src/types/video';
 
@@ -34,50 +34,37 @@ export function FiltersProvider({ children }: Props) {
   const debouncedSearch = useDebounce(search, 500);
 
   useEffect(() => {
-    const urlSearch = searchParams.get('search') || '';
-    const urlDuration = (searchParams.get('duration') as VideoDuration) || 'all';
-
-    setSearch(urlSearch);
-    setDuration(urlDuration);
-  }, [searchParams]);
-
-  useEffect(() => {
     const params = new URLSearchParams();
+    if (debouncedSearch) params.set('search', debouncedSearch);
+    if (duration !== 'all') params.set('duration', duration);
 
-    if (debouncedSearch) {
-      params.set('search', debouncedSearch);
+    const newQuery = params.toString();
+    const currentQuery = searchParams.toString();
+
+    if (newQuery !== currentQuery) {
+      startTransition(() => {
+        router.replace(newQuery ? `${pathname}?${newQuery}` : pathname, { scroll: false });
+      });
     }
+  }, [debouncedSearch, duration, pathname, router, search, searchParams]);
 
-    if (duration && duration !== 'all') {
-      params.set('duration', duration);
-    }
-
-    const search = params.toString();
-    const query = search ? `?${search}` : '';
-
-    startTransition(() => {
-      router.replace(`${pathname}${query}`, { scroll: false });
-    });
-  }, [debouncedSearch, duration, pathname, router]);
-
-  const handleReset = useCallback(() => {
+  const onReset = useCallback(() => {
     setSearch('');
     setDuration('all');
-    startTransition(() => {
-      router.replace(pathname, { scroll: false });
-    });
+    startTransition(() => router.replace(pathname, { scroll: false }));
   }, [pathname, router]);
 
-  const hasActiveFilters = Boolean(search) || duration !== 'all';
-
-  const value = {
-    search,
-    duration,
-    onSearchChange: setSearch,
-    onDurationChange: setDuration,
-    onReset: handleReset,
-    hasActiveFilters,
-  };
+  const value = useMemo(
+    () => ({
+      search,
+      duration,
+      onSearchChange: setSearch,
+      onDurationChange: setDuration,
+      onReset,
+      hasActiveFilters: search !== '' || duration !== 'all',
+    }),
+    [search, duration, onReset],
+  );
 
   return <FiltersContext.Provider value={value}>{children}</FiltersContext.Provider>;
 }
